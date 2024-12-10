@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -56,20 +57,38 @@ fun ItemListScreen(
     navController: NavHostController
 ) {
     val items = viewModel.listStringData.collectAsState()
+    val textFieldValue = remember { mutableStateOf("") }
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        items(items.value) { item ->
-            ItemCard(
-                item = item,
-                onClick = { onNavigateToDetail(item.id) }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
+
+
+        OutlinedTextField(
+            value = textFieldValue.value,
+            onValueChange = { textFieldValue.value = it },
+            modifier =  Modifier.fillMaxWidth().padding(bottom = 10.dp),
+            placeholder = { Text(text = "Search") }
+        )
+
+        val searchedItem = items.value.filter {
+            textFieldValue.value.lowercase() in it.name.lowercase()
+        }
+
+        LazyColumn(
+            modifier = Modifier
+        ) {
+            items(searchedItem) { item ->
+                ItemCard(
+                    item = item,
+                    onClick = { onNavigateToDetail(item.id) }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
     }
+
+
 
     BackHandler {
         navController.popBackStack()
