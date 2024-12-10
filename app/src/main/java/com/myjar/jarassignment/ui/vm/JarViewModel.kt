@@ -20,7 +20,7 @@ class JarViewModel : ViewModel() {
 
     fun fetchData() {
         viewModelScope.launch {
-            repository.fetchResults()
+            _listStringData.value = repository.fetchResults()
         }
     }
 }

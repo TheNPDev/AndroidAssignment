@@ -58,6 +58,7 @@ fun ItemListScreen(
     navController: NavHostController
 ) {
     val items = viewModel.listStringData.collectAsState()
+    println("HHHHH ${items.value}")
 
     if (navigate.value.isNotBlank()) {
         val currRoute = navController.currentDestination?.route.orEmpty()
@@ -88,7 +89,15 @@ fun ItemCard(item: ComputerItem, onClick: () -> Unit) {
             .padding(8.dp)
             .clickable { onClick() }
     ) {
-        Text(text = item.name, fontWeight = FontWeight.Bold, color = Color.Transparent)
+        Text(text = item.name, fontWeight = FontWeight.Bold, color = Color.Black)
+        item.data?.color?.let { Text(text = "Color: $it", color = Color.Black) }
+        item.data?.price?.let { Text(text = "CPU: $it", color = Color.Black) }
+        item.data?.capacity?.let { Text(text = "RAM: $it", color = Color.Black) }
+        item.data?.description?.let { Text(text = "Description: $it", color = Color.Black) }
+        item.data?.cpuModel?.let { Text(text = "CPU Model: $it", color = Color.Black) }
+        item.data?.generation?.let { Text(text = "CPU Speed: $it", color = Color.Black) }
+        item.data?.hardDiskSize?.let{ Text(text = "Hard Disk Size: $it", color = Color.Black) }
+        item.data?.strapColour?.let{ Text(text = "Strap Color: $it", color = Color.Black) }
     }
 }
 
