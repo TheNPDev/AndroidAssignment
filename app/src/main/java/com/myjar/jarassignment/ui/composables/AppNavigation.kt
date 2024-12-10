@@ -1,5 +1,6 @@
 package com.myjar.jarassignment.ui.composables
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,14 +33,12 @@ fun AppNavigation(
     viewModel: JarViewModel,
 ) {
     val navController = rememberNavController()
-    val navigate = remember { mutableStateOf<String>("") }
 
     NavHost(modifier = modifier, navController = navController, startDestination = "item_list") {
         composable("item_list") {
             ItemListScreen(
                 viewModel = viewModel,
-                onNavigateToDetail = { selectedItem -> navigate.value = selectedItem },
-                navigate = navigate,
+                onNavigateToDetail = { navController.navigate("item_detail/$it") },
                 navController = navController
             )
         }
@@ -54,18 +53,10 @@ fun AppNavigation(
 fun ItemListScreen(
     viewModel: JarViewModel,
     onNavigateToDetail: (String) -> Unit,
-    navigate: MutableState<String>,
     navController: NavHostController
 ) {
     val items = viewModel.listStringData.collectAsState()
-    println("HHHHH ${items.value}")
 
-    if (navigate.value.isNotBlank()) {
-        val currRoute = navController.currentDestination?.route.orEmpty()
-        if (!currRoute.contains("item_detail")) {
-            navController.navigate("item_detail/${navigate.value}")
-        }
-    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -78,6 +69,10 @@ fun ItemListScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
+    }
+
+    BackHandler {
+        navController.popBackStack()
     }
 }
 
